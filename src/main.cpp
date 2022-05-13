@@ -5,9 +5,7 @@ int main() {
 
 	DbMan dbMan;
 
-	dbMan.connect();
-
-	dbMan.disconnect();
+	dbMan.createQuoteTable("AAPL");
 
 	MoneyTree mTree;
 
