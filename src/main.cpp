@@ -1,6 +1,8 @@
 #include <iostream>
-#include <chrono>
-#include <thread>
+#include <chrono> // for time
+#include <thread> // for time
+#include <fstream> // for file read and write
+
 #include "../include/TDA.h"
 
 int main() {
@@ -52,14 +54,17 @@ int main() {
 
 		Quote testQuote = testTda.getQuote(ticker);
 
+		std::cout << "-----------------------------------------" << std::endl;
+
 		std::cout << "Symbol: " << testQuote.symbol << std::endl;
-		std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
-		std::cout << "Last Size: " << testQuote.lastSize << std::endl;
-		std::cout << "Bid Price: " << testQuote.bidPrice << std::endl;
-		std::cout << "Bid Size: " << testQuote.bidSize << std::endl;
-		std::cout << "Ask Price: " << testQuote.bidPrice << std::endl;
-		std::cout << "Ask Size: " << testQuote.askSize << std::endl;
-		std::cout << "Total Volume: " << testQuote.totalVolume << std::endl;
+		std::cout << "Last Price: " << testQuote.lastPrice << "\t";
+		std::cout << "Bid Price: " << testQuote.bidPrice << "\t";
+		std::cout << "Ask Price: " << testQuote.askPrice << std::endl;
+		std::cout << "Last Size: " << testQuote.lastSize << "\t\t";	
+		std::cout << "Bid Size: " << testQuote.bidSize << "\t\t";
+		std::cout << "Ask Size: " << testQuote.askSize << std::endl << std::endl;
+
+
 	} else if(userChoice == "3") {
 
 		std::cout << "Enter some tickers: " << std::endl;
@@ -113,22 +118,30 @@ int main() {
 		while(!(stop)) {
 			testQuote = testTda.getQuote(ticker);
 
-			if((testQuote.lastPrice != lastQuote.lastPrice) && (testQuote.bidPrice != lastQuote.bidPrice) &&
-				(testQuote.askPrice != lastQuote.askPrice) && (testQuote.bidSize != lastQuote.bidSize) &&
-				(testQuote.askSize != lastQuote.askSize)) {
+			std::cout << "-----------------------------------------" << std::endl;
 
-				std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
-				std::cout << "Last Size: " << testQuote.lastSize << std::endl;
-				std::cout << "Bid Price: " << testQuote.bidPrice << std::endl;
-				std::cout << "Bid Size: " << testQuote.bidSize << std::endl;
-				std::cout << "Ask Price: " << testQuote.bidPrice << std::endl;
-				std::cout << "Ask Size: " << testQuote.askSize << std::endl;
-				std::cout << "Total Volume: " << testQuote.totalVolume << std::endl;
-				std::cout << "--------------------------------" << std::endl;
-				lastQuote = testQuote;
-			}
+			std::cout << "Symbol: " << testQuote.symbol << std::endl;
+			std::cout << "Last Price: " << testQuote.lastPrice << "\t";
+			std::cout << "Bid Price: " << testQuote.bidPrice << "\t";
+			std::cout << "Ask Price: " << testQuote.askPrice << std::endl;
+			std::cout << "Last Size: " << testQuote.lastSize << "\t\t";	
+			std::cout << "Bid Size: " << testQuote.bidSize << "\t\t";
+			std::cout << "Ask Size: " << testQuote.askSize << std::endl << std::endl;
 
-			std::this_thread::sleep_for(std::chrono::seconds(1));
+			std::ofstream outputFile("./outputFile.txt", std::ios::app);
+			
+			outputFile << "--------------------------------------------\n";
+			outputFile << "Symbol: " + testQuote.symbol + "\n";
+			outputFile << "Last Price: " + std::to_string(testQuote.lastPrice) + "\t";
+			outputFile << "Bid Price: " + std::to_string(testQuote.bidPrice) + "\t";
+			outputFile << "Ask Price: " + std::to_string(testQuote.askPrice) + "\n";
+			outputFile << "Last Size: " + std::to_string(testQuote.lastSize) + "\t\t";
+			outputFile << "Bid Size: " + std::to_string(testQuote.bidSize) + "\t\t";
+			outputFile << "Ask Size: " + std::to_string(testQuote.askSize) + "\n\n";
+
+			outputFile.close();
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 		}
 		
@@ -170,7 +183,7 @@ int main() {
 
 		int lastTradeSize = 0;
 
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	
 		while(!(stop)) {
 				
@@ -203,7 +216,7 @@ int main() {
 						stockShares += tradeSize;
 						money -= (testQuote.askPrice * tradeSize);
 						buyAsk = testQuote.askPrice;
-						stopLoss = buyAsk - (buyAsk * 0.005);
+						stopLoss = buyAsk - (buyAsk * 0.003);
 						lastTradeSize = tradeSize;
 					}
 
