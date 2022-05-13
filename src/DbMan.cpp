@@ -10,17 +10,18 @@ DbMan::~DbMan() {
 
 }
 
-void DbMan::testDb() {
-	sqlite3 *db;
-	int rc;
-
+void DbMan::connect() {
 	rc = sqlite3_open("../test.db", &db);
 
-	if(rc) {
-		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-	}else {
-		fprintf(stderr, "Opened database successfully\n");
-	}	
+	std::cout << rc << std::endl;
 
+	if(!(rc)) {
+		std::cout << "Successfully connected!" << std::endl;
+	} else { 
+		fprintf(stderr, "Could not connect to database: %s\n", sqlite3_errmsg(db));
+	}
+}
+
+void DbMan::disconnect() {
 	sqlite3_close(db);
 }

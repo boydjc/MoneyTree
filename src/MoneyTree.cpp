@@ -196,9 +196,15 @@ void MoneyTree::paperTrade() {
 			std::cout << "Ask Size: " << currQuote.askSize << std::endl << std::endl;
 					
 			// Play strategy
-			// if we have an uptick with an increase in volume then we will buy
-			// if we have some stock with we encounter a down tick then we will sell
-			if(currQuote.bidPrice > lastQuote.bidPrice && currQuote.bidSize > currQuote.askSize) {
+			// Buy Signal
+			// if the bid price is greater than the last bid price, the current bid size is greater then the current ask size
+			// and the current ask price is greater than the last ask price we bought for
+			// if this is the inital buy then the last ask price we "bought" at is 0
+
+			// Sell signal
+			// if the current bid price is less than the last bid price, the current bidPrice is less than our last buying price,
+			// or if the bid price hits our stop loss
+			if(currQuote.bidPrice > lastQuote.bidPrice && currQuote.bidSize > currQuote.askSize && currQuote.askPrice >= buyAsk) {
 
 				float percentToRisk = 0.20;
 

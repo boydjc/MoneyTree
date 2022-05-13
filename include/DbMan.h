@@ -7,8 +7,12 @@ class DbMan {
 	public:
 		DbMan();
 		~DbMan();
-		void testDb();
+		void connect();
+		void disconnect();
 
 	private:
+		sqlite3 *db;
+		int rc;
+		char *zErrMsg = 0;
 
 };
