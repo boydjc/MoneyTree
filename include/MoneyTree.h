@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+
 #include "TDA.h"
+#include "DbMan.h"
 
 class MoneyTree {
 
@@ -21,5 +23,6 @@ class MoneyTree {
 		void paperTrade();
 
 		TDA tda;
+		DbMan dbMan;
 
 };
