@@ -5,7 +5,9 @@ int main() {
 
 	DbMan dbMan;
 
-	dbMan.testDb();
+	dbMan.connect();
+
+	dbMan.disconnect();
 
 	MoneyTree mTree;
 
