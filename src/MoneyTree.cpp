@@ -1,6 +1,6 @@
 #include <iostream>
-#include <chrono> // for time
-#include <thread> // for time
+#include <chrono>
+#include <thread> 
 
 #include "MoneyTree.h"
 
@@ -25,6 +25,7 @@ void MoneyTree::displayMenu() {
 	std::cout << "3. Get Quotes " << std::endl;
 	std::cout << "4. Monitor Mode" << std::endl;
 	std::cout << "5. Paper Mode" << std::endl;
+	std::cout << "6. Scrape Mode" << std::endl;
 }
 
 std::string MoneyTree::getUserInput() {
@@ -50,6 +51,9 @@ void MoneyTree::processMenuChoice(int userChoice) {
 			break;
 		case 5:
 			paperTrade();
+			break;
+		case 6:
+			monitor(true);
 			break;
 		default:
 			std::cout << "Sorry. That is an invalid choice." << std::endl;
@@ -115,35 +119,71 @@ void MoneyTree::printQuotes() {
 	}
 }
 
-void MoneyTree::monitor() {
+void MoneyTree::scrapeMode(std::string ticker) {
+	std::cout << "SCRAPE MODE: PRESS ANY KEY TO STOP!" << std::endl;
+	while(!scrapeThreadStop) {
+		// if the table exists, get the quote data and insert it into the table
+		if(dbMan.checkForQuoteTable(ticker)) {
+			Quote quote = tda.getQuote(ticker);
+
+			std::cout << "Inserting Quote" << std::endl;
+
+			std::cout << "-----------------------------------------" << std::endl;
+
+			std::cout << "Symbol: " << quote.symbol << std::endl;
+			std::cout << "Last Price: " << quote.lastPrice << "\t";
+			std::cout << "Bid Price: " << quote.bidPrice << "\t";
+			std::cout << "Ask Price: " << quote.askPrice << std::endl;
+			std::cout << "Last Size: " << quote.lastSize << "\t\t";	
+			std::cout << "Bid Size: " << quote.bidSize << "\t\t";
+			std::cout << "Ask Size: " << quote.askSize << std::endl << std::endl;
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		} else {
+			std::cout << "Table not found for ticker: " << ticker << std::endl;
+			std::cout << "Creating table. " << std::endl;
+			dbMan.createQuoteTable(ticker);
+		}
+	}
+}
+
+void MoneyTree::monitor(bool scrape) {
 	std::cout << "Enter a ticker" << std::endl;
 	std::string ticker = getUserInput();
-	std::cout << "MONITOR MODE: Press CTRL+C to stop!" << std::endl;
 
-	bool stop = false;
+	if(!scrape) {
+
+		std::cout << "MONITOR MODE: Press CTRL+C to stop!" << std::endl;
+
+		bool stop = false;
 	
-	Quote lastQuote;
-	Quote currentQuote = tda.getQuote(ticker);
+		Quote currentQuote = tda.getQuote(ticker);
 
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	
-	while(!(stop)) {
-		currentQuote = tda.getQuote(ticker);
+		while(!(stop)) {
+			currentQuote = tda.getQuote(ticker);
 
-		std::cout << "-----------------------------------------" << std::endl;
+			std::cout << "-----------------------------------------" << std::endl;
 
-		std::cout << "Symbol: " << currentQuote.symbol << std::endl;
-		std::cout << "Last Price: " << currentQuote.lastPrice << "\t";
-		std::cout << "Bid Price: " << currentQuote.bidPrice << "\t";
-		std::cout << "Ask Price: " << currentQuote.askPrice << std::endl;
-		std::cout << "Last Size: " << currentQuote.lastSize << "\t\t";	
-		std::cout << "Bid Size: " << currentQuote.bidSize << "\t\t";
-		std::cout << "Ask Size: " << currentQuote.askSize << std::endl << std::endl;
+			std::cout << "Symbol: " << currentQuote.symbol << std::endl;
+			std::cout << "Last Price: " << currentQuote.lastPrice << "\t";
+			std::cout << "Bid Price: " << currentQuote.bidPrice << "\t";
+			std::cout << "Ask Price: " << currentQuote.askPrice << std::endl;
+			std::cout << "Last Size: " << currentQuote.lastSize << "\t\t";	
+			std::cout << "Bid Size: " << currentQuote.bidSize << "\t\t";
+			std::cout << "Ask Size: " << currentQuote.askSize << std::endl << std::endl;
 
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-	} 
+		}
+	} else {
+		std::thread scrapeThread(&MoneyTree::scrapeMode, this, ticker);
+		std::cin.get();
+		scrapeThreadStop = true;
+		scrapeThread.join();
+		scrapeThreadStop = false;
+	}
 }
 
 void MoneyTree::paperTrade() {
