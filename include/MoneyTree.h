@@ -19,10 +19,12 @@ class MoneyTree {
 		void printHistPrice();
 		void printQuote();
 		void printQuotes();
-		void monitor();
+		void monitor(bool scrape=false);
+		void scrapeMode(std::string ticker);
 		void paperTrade();
 
 		TDA tda;
 		DbMan dbMan;
+		bool scrapeThreadStop = false;
 
 };
