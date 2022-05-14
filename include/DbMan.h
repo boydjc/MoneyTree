@@ -15,6 +15,7 @@ class DbMan {
 
 	private:
 		static int quoteTableCheckCallback(void *NotUsed, int argc, char **argv, char **azColName);
+		static int quoteTableCreationCallback(void *NotUsed, int argc, char **argv, char **azColName);
 
 		sqlite3 *db;
 		int rc;
