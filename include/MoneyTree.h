@@ -19,7 +19,7 @@ class MoneyTree {
 		void printHistPrice();
 		void printQuote();
 		void printQuotes();
-		void monitor(bool scrape=false);
+		void monitorMode(bool scrape=false);
 		void scrapeMode(std::string ticker);
 		void paperTrade();
 
