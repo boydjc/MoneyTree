@@ -47,13 +47,13 @@ void MoneyTree::processMenuChoice(int userChoice) {
 			printQuotes();
 			break;
 		case 4:
-			monitor();
+			monitorMode();
 			break;
 		case 5:
 			paperTrade();
 			break;
 		case 6:
-			monitor(true);
+			monitorMode(true);
 			break;
 		default:
 			std::cout << "Sorry. That is an invalid choice." << std::endl;
@@ -125,19 +125,7 @@ void MoneyTree::scrapeMode(std::string ticker) {
 		// if the table exists, get the quote data and insert it into the table
 		if(dbMan.checkForQuoteTable(ticker)) {
 			Quote quote = tda.getQuote(ticker);
-
-			std::cout << "Inserting Quote" << std::endl;
-
-			std::cout << "-----------------------------------------" << std::endl;
-
-			std::cout << "Symbol: " << quote.symbol << std::endl;
-			std::cout << "Last Price: " << quote.lastPrice << "\t";
-			std::cout << "Bid Price: " << quote.bidPrice << "\t";
-			std::cout << "Ask Price: " << quote.askPrice << std::endl;
-			std::cout << "Last Size: " << quote.lastSize << "\t\t";	
-			std::cout << "Bid Size: " << quote.bidSize << "\t\t";
-			std::cout << "Ask Size: " << quote.askSize << std::endl << std::endl;
-
+			dbMan.insertToQuoteTable(quote, ticker);	
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		} else {
 			std::cout << "Table not found for ticker: " << ticker << std::endl;
@@ -147,7 +135,7 @@ void MoneyTree::scrapeMode(std::string ticker) {
 	}
 }
 
-void MoneyTree::monitor(bool scrape) {
+void MoneyTree::monitorMode(bool scrape) {
 	std::cout << "Enter a ticker" << std::endl;
 	std::string ticker = getUserInput();
 
