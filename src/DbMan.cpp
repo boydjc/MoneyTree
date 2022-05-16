@@ -25,16 +25,10 @@ void DbMan::disconnect() {
 }
 
 int DbMan::quoteTableInsertionCallback(void *NotUsed, int argc, char **argv, char **azColName) {
-	for(int i = 0; i<argc; i++) {
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	}
-	printf("\n");
 	return 0;
 }
 
 void DbMan::insertToQuoteTable(Quote quote, std::string ticker) {
-	std::cout << "Inserting Quote" << std::endl;
-
 	std::string smt = "INSERT INTO " + ticker + " (SYMBOL,ASSET_MAIN_TYPE,"\
 					  "ASSET_SUB_TYPE,ASSET_TYPE,EXCHANGE,EXCHANGE_NAME,DIV_DATE,"\
 					  "SECURITY_STATUS,BID_ID,ASK_ID,DESCRIPTION,LAST_ID,PRODUCT,"\
@@ -108,12 +102,9 @@ void DbMan::insertToQuoteTable(Quote quote, std::string ticker) {
 	if(rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
-	} else {
-		fprintf(stdout, "Quote successfully Inserted\n");
-	}
+	} 
 
 	disconnect();
-
 
 }
 
