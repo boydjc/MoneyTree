@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
-#include <thread> 
+#include <thread>
+#include <cstdlib>
+#include <string>
 
 #include "MoneyTree.h"
 
@@ -120,12 +122,19 @@ void MoneyTree::printQuotes() {
 }
 
 void MoneyTree::scrapeMode(std::string ticker) {
-	std::cout << "SCRAPE MODE: PRESS ANY KEY TO STOP!" << std::endl;
+	std::cout << "\033[1;32mSCRAPE MODE: PRESS ENTER TO STOP!\033[0m" << std::endl;
+	int printCount = 0;
 	while(!scrapeThreadStop) {
 		// if the table exists, get the quote data and insert it into the table
 		if(dbMan.checkForQuoteTable(ticker)) {
+			if(printCount >= 30) {
+				int randColorNum = rand() % (36-32 + 1) + 32;
+				std::cout << "\033[1;" + std::to_string(randColorNum) + "mSCRAPE MODE: PRESS ENTER TO STOP!\033[0m" << std::endl;
+				printCount = 0;
+			}
 			Quote quote = tda.getQuote(ticker);
-			dbMan.insertToQuoteTable(quote, ticker);	
+			dbMan.insertToQuoteTable(quote, ticker);
+			printCount++;
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		} else {
 			std::cout << "Table not found for ticker: " << ticker << std::endl;
