@@ -13,7 +13,7 @@ DbMan::~DbMan() {
 }
 
 void DbMan::connect() {
-	rc = sqlite3_open("../test.db", &db);
+	rc = sqlite3_open("../quote-data.db", &db);
 
 	if(rc) {
 		fprintf(stderr, "Could not connect to database: %s\n", sqlite3_errmsg(db));
