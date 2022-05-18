@@ -9,12 +9,12 @@ Strategy::~Strategy() {
 	// deconstructor
 }
 
-bool Strategy::checkForBuy() {
+bool Strategy::checkForBuy(Quote quot) {
 	// virtual
 	return false;
 }
 
-bool Strategy::checkForSell() {
+bool Strategy::checkForSell(Quote quote) {
 	// virtual
 	return false;
 }

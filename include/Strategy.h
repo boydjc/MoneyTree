@@ -1,12 +1,14 @@
 #pragma once
 
+#include "TDA.h"
+
 class Strategy {
 	
 	public:
 		Strategy();
 		~Strategy();
-		virtual bool checkForSell();
-		virtual bool checkForBuy();
+		virtual bool checkForSell(Quote quote);
+		virtual bool checkForBuy(Quote quote);
 		void setCapRiskPercent(float value);
 		void setStopLoss(float value);
 		float getCapRiskPercent();

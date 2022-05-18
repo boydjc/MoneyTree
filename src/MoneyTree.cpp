@@ -183,103 +183,89 @@ void MoneyTree::monitorMode(bool scrape) {
 	}
 }
 
-void MoneyTree::paperTrade() {
-	std::cout << "Paper Mode" << std::endl;
-	std::cout << "Enter a ticker" << std::endl;
-	std::string ticker = getUserInput();
-
-	double money;
-	std::string userInput;
-
-	std::cout << "Enter starting amount" << std::endl;
-	std::cout << ":";
-		
-	getline(std::cin, userInput);
-
-	money = std::stof(userInput);
-
-	int stockShares = 0;
-
-	std::cout << "Money: $" << money << std::endl;
-	if(stockShares != 0) {
-		std::cout << "Shares of " << ticker << ": " << stockShares << std::endl;
-	}
-	std::cout << "-----------------------------------------" << std::endl;
-
-	bool stop = false;
-	
-	Quote lastQuote;
-	Quote currQuote = tda.getQuote(ticker);
-
-	float buyAsk;
-	float stopLoss;
-
-	int lastTradeSize = 0;
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	
-	while(!(stop)) {
-				
+void MoneyTree::paperTradeLoop(std::string ticker) {
+	// this will run on it's own thread until we stop it by hitting ENTER
+	while(!paperThreadStop) {	
 		try {
-			currQuote = tda.getQuote(ticker);
+			Quote quote = tda.getQuote(ticker);
 
 			std::cout << "-----------------------------------------" << std::endl;
 
-			std::cout << "Symbol: " << currQuote.symbol << std::endl;
-			std::cout << "Last Price: " << currQuote.lastPrice << "\t";
-			std::cout << "Bid Price: " << currQuote.bidPrice << "\t";
-			std::cout << "Ask Price: " << currQuote.askPrice << std::endl;
-			std::cout << "Last Size: " << currQuote.lastSize << "\t\t";	
-			std::cout << "Bid Size: " << currQuote.bidSize << "\t\t";
-			std::cout << "Ask Size: " << currQuote.askSize << std::endl << std::endl;
-					
-			// Play strategy
-			// Buy Signal
-			// if the bid price is greater than the last bid price, the current bid size is greater then the current ask size
-			// and the current ask price is greater than the last ask price we bought for
-			// if this is the inital buy then the last ask price we "bought" at is 0
+			std::cout << "Symbol: " << quote.symbol << std::endl;
+			std::cout << "Last Price: " << quote.lastPrice << "\t";
+			std::cout << "Bid Price: " << quote.bidPrice << "\t";
+			std::cout << "Ask Price: " << quote.askPrice << std::endl;
+			std::cout << "Last Size: " << quote.lastSize << "\t\t";	
+			std::cout << "Bid Size: " << quote.bidSize << "\t\t";
+			std::cout << "Ask Size: " << quote.askSize << std::endl << std::endl;
+	
+			if(userStrat->checkForBuy(quote)) {
+				float capitalToTrade = money * userStrat->getCapRiskPercent();	
+				int tradeSize = capitalToTrade / quote.askPrice;
 
-			// Sell signal
-			// if the current bid price is less than the last bid price, the current bidPrice is less than our last buying price,
-			// or if the bid price hits our stop loss
-			if(currQuote.bidPrice > lastQuote.bidPrice && currQuote.bidSize > currQuote.askSize && currQuote.askPrice >= buyAsk) {
-
-				float percentToRisk = 0.20;
-
-				float capitalToTrade = money * percentToRisk;
-
-				int tradeSize = capitalToTrade / currQuote.askPrice;
-					
 				if(tradeSize != 0) {
-					std::cout << "Bought " << tradeSize << " shares of "  << ticker << std::endl;
+					std::cout << "Bought " << tradeSize << " shares of " << ticker << std::endl;
 					stockShares += tradeSize;
-					money -= (currQuote.askPrice * tradeSize);
-					buyAsk = currQuote.askPrice;
-					stopLoss = buyAsk - (buyAsk * 0.003);
-					lastTradeSize = tradeSize;
+					money -= (quote.askPrice * tradeSize);
+					// make stop loss here later if we need it
 				}
-
-			}else if((currQuote.bidPrice < lastQuote.bidPrice && stockShares != 0 && currQuote.bidPrice != 0 && currQuote.bidPrice > buyAsk) || 
-					 (currQuote.bidPrice != 0 && currQuote.bidPrice <= stopLoss)) {
-				// sell at the bid
-				std::cout << "Sold all shares of " << ticker << std::endl << std::endl;
-				money += (stockShares * currQuote.bidPrice);
-				stockShares = 0;
-				buyAsk = 0;
-				stopLoss = 0;
+			}else if(userStrat->checkForSell(quote)) {
+				if(stockShares != 0) {
+					std::cout << "Sold all shares of " << ticker << std::endl << std::endl;
+					money += (stockShares * quote.bidPrice);
+					stockShares = 0;
+				}
 			}
-
+			
+		
 			std::cout << "\033[1;32mMoney: $" << money << "\033[0m" << std::endl;
 			if(stockShares != 0) {
 				std::cout << "\033[1;33mShares of " << ticker << ": " << stockShares << "\033[0m" << std::endl;
-				std::cout << "\033[1;31mStop loss: " << stopLoss << "\033[0m" << std::endl;
+				//std::cout << "\033[1;31mStop loss: " << stopLoss << "\033[0m" << std::endl;
 			}
-
-			lastQuote = currQuote;
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		} catch(...){
 			std::cout << "Error Getting New Quote" << std::endl;
 		}
 	}
+
+}
+
+void MoneyTree::paperTrade() {
+	std::cout << "Paper Mode" << std::endl;
+	std::cout << "Enter a ticker" << std::endl;
+	std::string ticker = getUserInput();
+
+	std::cout << "Select a strategy." << std::endl;
+	std::cout << "1. LastSize OP" << std::endl;
+	std::string stratSelect = getUserInput();
+
+	if(stratSelect == "1") {
+		userStrat = new LastSizeOp();
+	}
+
+	std::cout << "Enter starting amount" << std::endl;
+	std::string userInput = getUserInput();
+	money = std::stof(userInput);
+
+	stockShares = 0;
+	std::cout << "STARTING TRADING. PRESS ENTER TO STOP" << std::endl;
+	std::cout << "Money: $" << money << std::endl;
+	if(stockShares != 0) {
+		std::cout << "Shares of " << ticker << ": " << stockShares << std::endl;
+	}
+	std::cout << "-----------------------------------------" << std::endl;
+
+	std::thread paperThread(&MoneyTree::paperTradeLoop, this, ticker);
+	std::string stopLine;
+	getline(std::cin, stopLine);
+	paperThreadStop = true;
+	paperThread.join();
+	paperThreadStop = false;
+
+	
+	
+	delete userStrat;
+	std::cout << "Successfully deleted strat pointer" << std::endl;
 }
