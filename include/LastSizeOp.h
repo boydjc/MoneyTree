@@ -9,4 +9,8 @@ class LastSizeOp : public Strategy {
 		~LastSizeOp();
 		bool checkForBuy(Quote quote);
 		bool checkForSell(Quote quote);
+
+	private:
+		float highestBuyPrice = 0.00;
+		long lastTradeTime = 0;
 };

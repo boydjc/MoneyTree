@@ -23,15 +23,16 @@ void Strategy::setCapRiskPercent(float value) {
 	capRiskPercent = value;
 }
 
-void Strategy::setStopLoss(float value) {
-	stopLoss = value;
+
+float Strategy::getCapRiskPercent() {
+	return capRiskPercent;
 }
 
 float Strategy::getStopLoss() {
 	return stopLoss;
 }
 
-float Strategy::getCapRiskPercent() {
-	return capRiskPercent;
+float Strategy::getStopLossPercent() {
+	return stopLossPercent;
 }
 
