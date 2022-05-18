@@ -191,7 +191,7 @@ void MoneyTree::paperTradeLoop(std::string ticker) {
 
 			std::cout << "-----------------------------------------" << std::endl;
 
-			std::cout << "Symbol: " << quote.symbol << std::endl;
+			std::cout << "Symbol: " << quote.symbol << "\t" << "Trade Time: " << quote.tradeTimeInLong << std::endl;
 			std::cout << "Last Price: " << quote.lastPrice << "\t";
 			std::cout << "Bid Price: " << quote.bidPrice << "\t";
 			std::cout << "Ask Price: " << quote.askPrice << std::endl;
@@ -221,7 +221,7 @@ void MoneyTree::paperTradeLoop(std::string ticker) {
 			std::cout << "\033[1;32mMoney: $" << money << "\033[0m" << std::endl;
 			if(stockShares != 0) {
 				std::cout << "\033[1;33mShares of " << ticker << ": " << stockShares << "\033[0m" << std::endl;
-				//std::cout << "\033[1;31mStop loss: " << stopLoss << "\033[0m" << std::endl;
+				std::cout << "\033[1;31mStop loss: $" << userStrat->getStopLoss() << "(" << userStrat->getStopLossPercent() << "%)" << "\033[0m" << std::setprecision(5) << std::endl;
 			}
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -252,6 +252,8 @@ void MoneyTree::paperTrade() {
 	stockShares = 0;
 	std::cout << "STARTING TRADING. PRESS ENTER TO STOP" << std::endl;
 	std::cout << "Money: $" << money << std::endl;
+
+	float startMoney = money;
 	if(stockShares != 0) {
 		std::cout << "Shares of " << ticker << ": " << stockShares << std::endl;
 	}
@@ -264,6 +266,9 @@ void MoneyTree::paperTrade() {
 	paperThread.join();
 	paperThreadStop = false;
 
+	std::cout << "Starting Money: $" << startMoney << std::endl;
+	std::cout << "Ending Money: $" << money << std::endl;
+	std::cout << "P/L = $" << money - startMoney << std::endl;
 	
 	
 	delete userStrat;
