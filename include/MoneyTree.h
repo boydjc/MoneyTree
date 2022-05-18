@@ -3,6 +3,7 @@
 
 #include "TDA.h"
 #include "DbMan.h"
+#include "LastSizeOp.h"
 
 class MoneyTree {
 
@@ -22,9 +23,14 @@ class MoneyTree {
 		void monitorMode(bool scrape=false);
 		void scrapeMode(std::string ticker);
 		void paperTrade();
+		void paperTradeLoop(std::string ticker);
 
 		TDA tda;
 		DbMan dbMan;
 		bool scrapeThreadStop = false;
+		bool paperThreadStop = false;
+		Strategy *userStrat;
+		double money = 0.00;
+		int stockShares = 0;
 
 };
