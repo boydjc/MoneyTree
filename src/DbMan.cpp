@@ -1,6 +1,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <string>
+#include <typeinfo>
 
 
 #include "DbMan.h"
@@ -24,21 +25,28 @@ void DbMan::disconnect() {
 	sqlite3_close(db);
 }
 
-int DbMan::getTableNamesCallback(void *NotUsed, int argc, char **argv, char **azColName){
-	for(int i=0; i<argc; i++) {
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+int DbMan::getTableNamesCallback(void *param, int argc, char **argv, char **azColName){
+
+	// cast from void to the instance type we pased
+	// in this case it's an instance of the class (this)
+	DbMan* dbParam = (DbMan*) param;
+
+	if(argv[0] != "sqlite_sequence") {
+		dbParam->tableNamesData.push_back(argv[0]);
 	}
 
-	printf("\n");
 	return 0;
 }
 
 void DbMan::getTableNames() {
+
+	tableNamesData.clear();
+
 	connect();
 
 	std::string smt = "SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;";
 
-	rc = sqlite3_exec(db, smt.c_str(), getTableNamesCallback, 0, &zErrMsg);
+	rc = sqlite3_exec(db, smt.c_str(), getTableNamesCallback, this, &zErrMsg);
 
 	if(rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -48,9 +56,12 @@ void DbMan::getTableNames() {
 	disconnect();
 }
 
-int DbMan::quoteDataCallback(void *NotUsed, int argc, char **argv, char **azColName) {
+int DbMan::quoteDataCallback(void *param, int argc, char **argv, char **azColName) {
+
+	DbMan* dbParam = (DbMan*) param;
+
 	for(int i=0; i<argc; i++) {
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+		//printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 	}
 
 	printf("\n");
@@ -64,7 +75,7 @@ void DbMan::getQuoteData() {
 
 	for(int i=0; i<tableNamesData.size(); i++) {
 		std::string smt = "SELECT * FROM " + tableNamesData[i] + ";";
-		rc = sqlite3_exec(db, smt.c_str(), quoteDataCallback, 0, &zErrMsg);
+		rc = sqlite3_exec(db, smt.c_str(), quoteDataCallback, this, &zErrMsg);
 		if(rc != SQLITE_OK) {
 			fprintf(stderr, "SQL error: %s\n", zErrMsg);
 			sqlite3_free(zErrMsg);
