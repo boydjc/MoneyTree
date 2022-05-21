@@ -1,10 +1,16 @@
 #include "MoneyTree.h"
+#include "DbMan.h"
 
 int main() {
 
-	MoneyTree mTree;
+	//MoneyTree mTree;
 
-	mTree.mainLoop();
+	//mTree.mainLoop();
+
+	DbMan dbMan;
+
+	dbMan.getTableNames();
+	dbMan.getQuoteData();
 
 	return 0;
 }
