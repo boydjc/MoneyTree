@@ -1,5 +1,6 @@
 #include "MoneyTree.h"
 #include "DbMan.h"
+#include <iostream>
 
 int main() {
 
@@ -9,8 +10,11 @@ int main() {
 
 	DbMan dbMan;
 
-	dbMan.getTableNames();
-	dbMan.getQuoteData();
+	dbMan.setQuoteData();
+
+	std::vector<Quote> quoteData = dbMan.getQuoteData();
+
+	std::cout << quoteData[0].symbol << std::endl;
 
 	return 0;
 }
