@@ -31,9 +31,7 @@ int DbMan::getTableNamesCallback(void *param, int argc, char **argv, char **azCo
 	// in this case it's an instance of the class (this)
 	DbMan* dbParam = (DbMan*) param;
 
-	if(argv[0] != "sqlite_sequence") {
-		dbParam->tableNamesData.push_back(argv[0]);
-	}
+	dbParam->tableNamesData.push_back(argv[0]);
 
 	return 0;
 }
@@ -60,29 +58,88 @@ int DbMan::quoteDataCallback(void *param, int argc, char **argv, char **azColNam
 
 	DbMan* dbParam = (DbMan*) param;
 
-	for(int i=0; i<argc; i++) {
-		//printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	}
+	Quote newQuote;
+	
 
-	printf("\n");
+	newQuote.symbol = argv[1]; newQuote.assetMainType = argv[2];
+	newQuote.assetSubType = argv[3]; newQuote.assetType = argv[4];
+	newQuote.exchange = argv[5]; newQuote.exchangeName = argv[6];
+	newQuote.divDate = argv[7]; newQuote.securityStatus = argv[8];
+	newQuote.bidId = argv[9]; newQuote.askId = argv[10];
+	newQuote.description = argv[11]; newQuote.lastId = argv[12];
+	newQuote.product = argv[13]; newQuote.futurePriceFormat = argv[14];
+	newQuote.futureTradingHours = argv[15]; newQuote.futureExpirationDate = argv[16];
+	newQuote.contractType = argv[17]; newQuote.deliverables = argv[18];
+	newQuote.uvExpirationType = argv[19]; newQuote.settlementType = argv[20];
+	newQuote.tradingHours = argv[21]; newQuote.marketMaker = argv[22];
+	newQuote.cusip = argv[23]; newQuote.lastPrice = std::stof(argv[24]);
+	newQuote.openPrice = std::stof(argv[25]); newQuote.highPrice = std::stof(argv[26]);
+	newQuote.lowPrice = std::stof(argv[27]); newQuote.closePrice = std::stof(argv[28]);
+	newQuote.bidPrice = std::stof(argv[29]); newQuote.netChange = std::stof(argv[30]);
+	newQuote.fiftyTwoWeekHigh = std::stof(argv[31]); newQuote.fiftyTwoWeekLow = std::stof(argv[32]);
+	newQuote.peRatio = std::stof(argv[33]); newQuote.divAmount = std::stof(argv[34]);
+	newQuote.divYield = std::stof(argv[35]); newQuote.futurePercentChange = std::stof(argv[36]);
+	newQuote.moneyIntrinsicValue = std::stof(argv[37]); newQuote.mark = std::stof(argv[38]);
+	newQuote.tick = std::stof(argv[39]); newQuote.fiftyWkHigh = std::stof(argv[40]);
+	newQuote.fiftyWkLow = std::stof(argv[41]); newQuote.askPrice = std::stof(argv[42]);
+	newQuote.volatility = std::stof(argv[43]); newQuote.futureSettlementPrice = std::stof(argv[44]);
+	newQuote.strikePrice = std::stof(argv[45]); newQuote.timeValue = std::stof(argv[46]);
+	newQuote.delta = std::stof(argv[47]); newQuote.gamma = std::stof(argv[48]);
+	newQuote.theta = std::stof(argv[49]); newQuote.vega = std::stof(argv[50]);
+	newQuote.rho = std::stof(argv[51]); newQuote.theoreticalOptionValue = std::stof(argv[52]);
+	newQuote.underlyingPrice = std::stof(argv[53]); newQuote.percentChange = std::stof(argv[54]);
+	newQuote.regularMarketLastPrice = std::stof(argv[55]); newQuote.regularMarketNetChange = std::stof(argv[56]);
+	newQuote.digits = std::stoi(argv[57]); newQuote.nAV = std::stoi(argv[58]);
+	newQuote.openInterest = std::stoi(argv[59]);newQuote.futureMultiplier = std::stoi(argv[60]);
+	newQuote.tickAmount = std::stoi(argv[61]); newQuote.totalVolume = std::stoi(argv[62]);
+	newQuote.bidSize = std::stoi(argv[63]); newQuote.askSize = std::stoi(argv[64]);
+	newQuote.lastSize = std::stoi(argv[65]); newQuote.multiplier = std::stoi(argv[66]);
+	newQuote.regularMarketLastSize = std::stoi(argv[67]); newQuote.tradeTimeInLong = std::stol(argv[68]);
+	newQuote.quoteTimeInLong = std::stol(argv[69]); newQuote.bidSizeInLong = std::stol(argv[70]);
+	newQuote.lastSizeInLong = std::stol(argv[71]); newQuote.askSizeInLong = std::stol(argv[72]);
+	newQuote.regularMarketTradeTimeInLong = std::stol(argv[73]); newQuote.bidPriceInDouble = std::stod(argv[74]);
+	newQuote.askPriceInDouble = std::stod(argv[75]); newQuote.lastPriceInDouble = std::stod(argv[76]);
+	newQuote.highPriceInDouble = std::stod(argv[77]); newQuote.lowPriceInDouble = std::stod(argv[78]);
+	newQuote.closePriceInDouble = std::stod(argv[79]); newQuote.openPriceInDouble = std::stod(argv[80]);
+	newQuote.netChangeInDouble = std::stod(argv[81]); newQuote.moneyIntrinsicValueInDouble = std::stod(argv[82]);
+	newQuote.markChangeInDouble = std::stod(argv[83]); newQuote.markPercentChangeInDouble = std::stod(argv[84]);
+	newQuote.netPercentChangeInDouble = std::stod(argv[85]); newQuote.regularMarketPercentChangeInDouble = std::stod(argv[86]);
+	newQuote.multiplierInDouble = std::stod(argv[87]); newQuote.strikePriceInDouble = std::stod(argv[88]);
+	newQuote.timeValueInDouble = std::stod(argv[89]); newQuote.deltaInDouble = std::stod(argv[90]);
+	newQuote.gammaInDouble = std::stod(argv[91]); newQuote.thetaInDouble = std::stod(argv[92]);
+	newQuote.vegaInDouble = std::stod(argv[93]); newQuote.rhoInDouble = std::stod(argv[94]);
+	newQuote.changeInDouble = std::stod(argv[95]); newQuote.fiftyTwoWkHighInDouble = std::stod(argv[96]);
+	newQuote.fiftyTwoWkLowInDouble = std::stod(argv[97]);
+
+	dbParam->quoteData.push_back(newQuote);
+
 	return 0;
 }
 
-void DbMan::getQuoteData() {
+void DbMan::setQuoteData() {
+
+	getTableNames();
+
 	quoteData.clear();
 
 	connect();
 
 	for(int i=0; i<tableNamesData.size(); i++) {
-		std::string smt = "SELECT * FROM " + tableNamesData[i] + ";";
-		rc = sqlite3_exec(db, smt.c_str(), quoteDataCallback, this, &zErrMsg);
-		if(rc != SQLITE_OK) {
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-			sqlite3_free(zErrMsg);
+		if(tableNamesData[i] != "sqlite_sequence") {
+			std::string smt = "SELECT * FROM " + tableNamesData[i] + ";";
+			rc = sqlite3_exec(db, smt.c_str(), quoteDataCallback, this, &zErrMsg);
+			if(rc != SQLITE_OK) {
+				fprintf(stderr, "SQL error: %s\n", zErrMsg);
+				sqlite3_free(zErrMsg);
+			}
 		}
 	}
 
 	disconnect();
+}
+
+std::vector<Quote> DbMan::getQuoteData() {
+	return quoteData;
 }
 
 int DbMan::quoteTableInsertionCallback(void *NotUsed, int argc, char **argv, char **azColName) {
