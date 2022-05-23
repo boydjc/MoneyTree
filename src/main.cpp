@@ -4,17 +4,9 @@
 
 int main() {
 
-	//MoneyTree mTree;
+	MoneyTree mTree;
 
-	//mTree.mainLoop();
-
-	DbMan dbMan;
-
-	dbMan.setQuoteData();
-
-	std::vector<Quote> quoteData = dbMan.getQuoteData();
-
-	std::cout << quoteData[0].symbol << std::endl;
+	mTree.mainLoop();
 
 	return 0;
 }

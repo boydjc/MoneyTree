@@ -4,6 +4,7 @@
 #include "TDA.h"
 #include "DbMan.h"
 #include "LastSizeOp.h"
+#include "BackTester.h"
 
 class MoneyTree {
 
@@ -24,9 +25,11 @@ class MoneyTree {
 		void scrapeMode(std::string ticker);
 		void paperTrade();
 		void paperTradeLoop(std::string ticker);
+		void backTestMenu();
 
 		TDA tda;
 		DbMan dbMan;
+		BackTester backTester;
 		bool scrapeThreadStop = false;
 		bool paperThreadStop = false;
 		Strategy *userStrat;
