@@ -28,6 +28,7 @@ void MoneyTree::displayMenu() {
 	std::cout << "4. Monitor Mode" << std::endl;
 	std::cout << "5. Paper Mode" << std::endl;
 	std::cout << "6. Scrape Mode" << std::endl;
+	std::cout << "7. Back Test" << std::endl;
 }
 
 std::string MoneyTree::getUserInput() {
@@ -56,6 +57,9 @@ void MoneyTree::processMenuChoice(int userChoice) {
 			break;
 		case 6:
 			monitorMode(true);
+			break;
+		case 7:
+			backTestMenu();
 			break;
 		default:
 			std::cout << "Sorry. That is an invalid choice." << std::endl;
@@ -270,7 +274,28 @@ void MoneyTree::paperTrade() {
 	std::cout << "Ending Money: $" << money << std::endl;
 	std::cout << "P/L = $" << money - startMoney << std::endl;
 	
-	
 	delete userStrat;
 	std::cout << "Successfully deleted strat pointer" << std::endl;
+}
+
+void MoneyTree::backTestMenu() {
+	std::cout << "Choose Strategy" << std::endl;
+	std::cout << "1. LastSize OP" << std::endl;
+	
+	std::string stratSelect = getUserInput();
+
+	if(stratSelect == "1") {
+		userStrat = new LastSizeOp();
+	}
+
+	std::cout << "Enter starting amount" << std::endl;
+	std::string userInput = getUserInput();
+	money = std::stof(userInput);
+
+	backTester.setStartingCash(money);
+
+	backTester.performBackTest(userStrat);
+
+	delete userStrat;
+
 }

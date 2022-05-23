@@ -2,7 +2,6 @@
 #include <iostream>
 
 LastSizeOp::LastSizeOp() {
-	std::cout << "Hello from LastSizeOp Strategy" << std::endl;
 	stopLossPercent = 0.0005;
 	capRiskPercent = 0.20;
 }
