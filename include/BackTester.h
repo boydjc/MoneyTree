@@ -12,7 +12,9 @@ class BackTester {
 		std::vector<Quote> quoteData;
 		int successfulTrades = 0;
 		int unsuccessfulTrades = 0;
-		int stockShares;
+		int totalTrades = 0;
+		int stockShares = 0;;
 		float money = 0.00;
+		float totalSpent = 0.00;
 		DbMan dbMan;
 };

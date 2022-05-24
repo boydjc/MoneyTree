@@ -35,4 +35,5 @@ class MoneyTree {
 		Strategy *userStrat;
 		double money = 0.00;
 		int stockShares = 0;
+		bool exit = false;
 };
