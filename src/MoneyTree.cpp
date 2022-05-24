@@ -15,9 +15,11 @@ MoneyTree::~MoneyTree() {
 }
 
 void MoneyTree::mainLoop() {
-	displayMenu();
-	std::string userInput = getUserInput();
-	processMenuChoice(std::stoi(userInput));
+	if(!exit) {
+		displayMenu();
+		std::string userInput = getUserInput();
+		processMenuChoice(std::stoi(userInput));
+	}
 }
 
 void MoneyTree::displayMenu() {
@@ -29,6 +31,7 @@ void MoneyTree::displayMenu() {
 	std::cout << "5. Paper Mode" << std::endl;
 	std::cout << "6. Scrape Mode" << std::endl;
 	std::cout << "7. Back Test" << std::endl;
+	std::cout << "0. Exit" << std::endl;
 }
 
 std::string MoneyTree::getUserInput() {
@@ -60,6 +63,9 @@ void MoneyTree::processMenuChoice(int userChoice) {
 			break;
 		case 7:
 			backTestMenu();
+			break;
+		case 0:
+			exit = true;
 			break;
 		default:
 			std::cout << "Sorry. That is an invalid choice." << std::endl;
