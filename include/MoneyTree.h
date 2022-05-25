@@ -3,7 +3,7 @@
 
 #include "TDA.h"
 #include "DbMan.h"
-#include "LastSizeOp.h"
+#include "CurrentTestStrat.h"
 #include "BackTester.h"
 
 class MoneyTree {

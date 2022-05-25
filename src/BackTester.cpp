@@ -39,7 +39,10 @@ void BackTester::performBackTest(Strategy *testStrat) {
 				currentCash -= (quoteData[i].askPrice * tradeSize);
 				totalSpent += (quoteData[i].askPrice * tradeSize);
 			}
-		}else if(testStrat->checkForSell(quoteData[i])) {	
+		}else if(testStrat->checkForSell(quoteData[i]) || quoteData[i].symbol != prevQuote.symbol) {	
+			// here we check if the current symbol is different from the previous symbol
+			// meaning that we have crossed over to data from a new table and could be in a hugely different 
+			// price range
 			if(stockShares != 0) {
 				//std::cout << "SELL" << std::endl;
 				// check to see if we made a profit
@@ -55,6 +58,8 @@ void BackTester::performBackTest(Strategy *testStrat) {
 				totalSpent = 0;
 			}
 		}
+
+		prevQuote = quoteData[i];
 	}
 
 	float successRate = ((float) successfulTrades / (float) totalTrades) * 100;
