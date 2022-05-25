@@ -252,7 +252,7 @@ void MoneyTree::paperTrade() {
 	std::string stratSelect = getUserInput();
 
 	if(stratSelect == "1") {
-		userStrat = new LastSizeOp();
+		userStrat = new CurrentTestStrat();
 	}
 
 	std::cout << "Enter starting amount" << std::endl;
@@ -286,12 +286,12 @@ void MoneyTree::paperTrade() {
 
 void MoneyTree::backTestMenu() {
 	std::cout << "Choose Strategy" << std::endl;
-	std::cout << "1. LastSize OP" << std::endl;
+	std::cout << "1. Current Test Strat" << std::endl;
 	
 	std::string stratSelect = getUserInput();
 
 	if(stratSelect == "1") {
-		userStrat = new LastSizeOp();
+		userStrat = new CurrentTestStrat();
 	}
 
 	std::cout << "Enter starting amount" << std::endl;

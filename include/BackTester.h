@@ -10,6 +10,7 @@ class BackTester {
 		void setStartingCash(float amount);
 	private:
 		std::vector<Quote> quoteData;
+		Quote prevQuote;
 		int successfulTrades = 0;
 		int unsuccessfulTrades = 0;
 		int totalTrades = 0;

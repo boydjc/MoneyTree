@@ -2,15 +2,15 @@
 
 #include "Strategy.h"
 
-class LastSizeOp : public Strategy {
-	
+class CurrentTestStrat : public Strategy {
 	public:
-		LastSizeOp();
-		~LastSizeOp();
+		CurrentTestStrat();
+		~CurrentTestStrat();
 		bool checkForBuy(Quote quote);
 		bool checkForSell(Quote quote);
 
 	private:
 		float highestBuyPrice = 0.00;
 		long lastTradeTime = 0;
+		Quote lastQuote;
 };
